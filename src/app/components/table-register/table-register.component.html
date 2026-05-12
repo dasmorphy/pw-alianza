@@ -1,0 +1,179 @@
+<p-toast></p-toast>
+
+<p-dialog [(visible)]="scannerEnabled" header="Escanear QR" [modal]="true" [closable]="true" [draggable]="false"
+    [resizable]="false" [style]="{ width: '500px' }" (onShow)="onScannerDialogShow()" (onHide)="closeScanner()">
+
+    <div class="flex flex-column gap-3">
+
+        <div *ngIf="scannerError" class="p-3 border-round bg-red-100 text-red-900">
+
+            {{ scannerError }}
+
+        </div>
+
+        <div *ngIf="!scannerError" class="scanner-container">
+
+            <zxing-scanner *ngIf="scannerReady" [enable]="scannerEnabled" [device]="currentDevice"
+                (scanSuccess)="onScan($event)" (camerasFound)="onCamerasFound($event)"
+                (permissionResponse)="onHasPermission($event)" (scanError)="onScannerError($event)">
+            </zxing-scanner>
+
+        </div>
+
+        <div class="text-center text-600 text-sm">
+            Coloque el código QR frente a la cámara
+        </div>
+
+    </div>
+
+</p-dialog>
+
+<div class="bg-bluegray-50 border-round-2xl flex flex-column flex-no-wrap justify-content-center align-items-end">
+
+    <div class="bg-white w-12 flex flex-column p-responsive py-5 border-round-md flex-wrap" style="overflow: auto">
+
+        <h1 class="font-verdana pl-responsive">
+            Total Registros
+        </h1>
+
+        <div class="card w-full pd-table" id="table-logbooks">
+
+            <p-table #dt_register [value]="registrations" [paginator]="true" [rows]="5"
+                [rowsPerPageOptions]="[5, 10, 25, 50]" [showCurrentPageReport]="false"
+                [tableStyle]="{ 'max-width': '100%' }" rowStyleClass="custom-row-height" dataKey="id">
+
+                <ng-template pTemplate="caption">
+
+                    <div class="w-full flex justify-content-between align-items-center">
+
+                        <div class="p-inputgroup flex h-3rem p-input-icon-left border-round-2xl w-search-table">
+
+                            <i style="z-index: 2;" class="pi pi-search text-primary--custom">
+                            </i>
+
+                            <input class="border-none shadow-none--custom border-round-left-2xl border-round-right-2xl"
+                                type="text" pInputText
+                                (input)="dt_register.filterGlobal($any($event.target).value, 'contains')" />
+
+                        </div>
+
+                        <div class="flex gap-2">
+
+                            <p-button label="" icon="pi pi-qrcode" class="w-reload" (onClick)="scanQr()"
+                                styleClass="w-full bg-white text-primary--custom b-reload border-round-1xl h-full">
+                            </p-button>
+
+                            <p-button label="" icon="pi pi-file-excel" class="w-reload" (onClick)="generateExcel()"
+                                styleClass="w-full bg-white text-primary--custom b-reload border-round-1xl h-full">
+                            </p-button>
+
+                            <p-button label="" icon="pi pi-sync" class="w-reload" (onClick)="loadRegistrations()"
+                                styleClass="w-full bg-white text-primary--custom b-reload border-round-1xl h-full">
+                            </p-button>
+
+                        </div>
+
+                    </div>
+
+                </ng-template>
+
+                <ng-template pTemplate="header">
+
+                    <tr>
+                        <th scope="col">Opciones</th>
+                        <th scope="col">Fecha</th>
+                        <th scope="col">Nombres</th>
+                        <th scope="col">Correo</th>
+                        <th scope="col">Teléfono</th>
+                        <th scope="col">Posición</th>
+                        <th scope="col">Empresa</th>
+                        <th scope="col">Tipo industria</th>
+                        <th scope="col">Asistirá</th>
+                    </tr>
+
+                </ng-template>
+
+                <ng-template pTemplate="body" let-register>
+
+                    <tr>
+
+                        <td data-titulo="Opciones:">
+
+                            <p-splitButton id="option-table" appendTo="body" (click)="optionsRegister(register)"
+                                [model]="items">
+
+                                <ng-template pTemplate="dropdownicon">
+                                    <i class="pi pi-ellipsis-h" style="color: #83378f;">
+                                    </i>
+                                </ng-template>
+
+                            </p-splitButton>
+
+                        </td>
+
+                        <td data-titulo="Fecha:"
+                            [ngxTippy]="'Hora de registro: ' + (register?.created_at | date:'HH:mm':'UTC')">
+
+                            {{ register?.created_at | date:'dd/MM/yyyy':'UTC' }}
+
+                        </td>
+
+                        <td data-titulo="Nombres:">
+                            {{ register?.names }}
+                        </td>
+
+                        <td data-titulo="Correo:">
+                            {{ register?.email }}
+                        </td>
+
+                        <td data-titulo="Teléfono:">
+                            {{ register?.phone }}
+                        </td>
+
+                        <td data-titulo="Posición:">
+                            {{ register?.position }}
+                        </td>
+
+                        <td data-titulo="Empresa:">
+                            {{ register?.business }}
+                        </td>
+
+                        <td data-titulo="Tipo industria:">
+                            {{ register?.type_industry }}
+                        </td>
+
+                        <td data-titulo="Asistirá:">
+                            {{ register?.is_assist ? 'Si' : 'No' }}
+                        </td>
+
+                    </tr>
+
+                </ng-template>
+
+                <ng-template pTemplate="emptymessage">
+
+                    <tr>
+                        <td colspan="11" class="text-center" style="font-size: 18px; font-weight: 700;">
+
+                            No hay datos disponibles
+
+                        </td>
+                    </tr>
+
+                </ng-template>
+
+            </p-table>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="overlay" *ngIf="isLoading">
+
+    <p-progressSpinner class="center-spinner" [style]="{ width: '50px', height: '50px' }" strokeWidth="8" fill="#007bff"
+        animationDuration="2s">
+    </p-progressSpinner>
+
+</div>
