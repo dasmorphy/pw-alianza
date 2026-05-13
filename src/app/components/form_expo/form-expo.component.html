@@ -56,8 +56,21 @@
                         </div>
                         <div class="form-col">
                             <label class="field-label">Empresa <span class="required">*</span></label>
-                            <input pInputText formControlName="business" placeholder="Nombre de la empresa"
-                                class="p-inputtext-sm custom-input" />
+                            <p-dropdown [style]="{ boxShadow: 'none', maxWidth: '100%' }" [filter]="true"
+                                filterBy="value"
+                                styleClass="border-round mt-2 w-full" id="business" optionLabel="label"
+                                formControlName="business" [options]="clientOptions" optionValue="value"
+                                (onChange)="onChangeClient($event.value)"
+                                [autoDisplayFirst]="false">
+                            </p-dropdown>
+                            
+                            <p class="privacy-text mt-2">En caso de no encontrar su empresa, seleccione la opción "Otro"</p>
+
+                            @if (registrationForm.get('business')?.value === 'Otro') {
+                                <input pInputText ng placeholder="Nombre empresa" [ngModelOptions]="{standalone: true}"
+                                class="p-inputtext-sm custom-input mt-2" [(ngModel)]="otherBusiness" />
+                            }
+
                         </div>
                     </div>
 
@@ -65,8 +78,24 @@
                     <div class="form-row">
                         <div class="form-col">
                             <label class="field-label">Cargo <span class="required">*</span></label>
-                            <input pInputText formControlName="position" placeholder="Cargo"
+                            
+                            @if(registrationForm.get('business')?.value != 'Otro') {
+                                <p-dropdown [style]="{ boxShadow: 'none', maxWidth: '100%' }"
+                                    styleClass="border-round mt-2 w-full" id="business" optionLabel="label"
+                                    formControlName="position" [options]="positions" optionValue="value"
+                                    [autoDisplayFirst]="false">
+                                </p-dropdown>
+                            }
+                            @else {
+                                <input pInputText formControlName="position" placeholder="Cargo"
                                 class="p-inputtext-sm custom-input" />
+                            }
+
+                            @if (registrationForm.get('position')?.value === 'Otro') {
+                                <input pInputText ng placeholder="Cargo" [ngModelOptions]="{standalone: true}"
+                                class="p-inputtext-sm custom-input mt-2" [(ngModel)]="otherPosition" />
+                            }
+
                         </div>
 
                         <div class="form-col">
@@ -84,7 +113,7 @@
                             </p-dropdown>
 
                             @if (registrationForm.get('type_industry')?.value === 'Otro') {
-                                <input pInputText ng placeholder="Nombre de la empresa" [ngModelOptions]="{standalone: true}"
+                                <input pInputText ng placeholder="Tipo industria" [ngModelOptions]="{standalone: true}"
                                 class="p-inputtext-sm custom-input mt-2" [(ngModel)]="otherIndustry" />
                             }
                         </div>

@@ -13,6 +13,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { UtilsService } from 'src/app/services/utils.service';
 import { ToastModule } from 'primeng/toast';
 import { RadioButtonModule } from 'primeng/radiobutton';
+import { CLIENT_OPTIONS, POSITION_BY_CLIENT } from 'src/app/services/clients_form';
 
 @Component({
   selector: 'app-form-expo',
@@ -36,10 +37,16 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 export class FormExpoComponent {
 
   private utilsService = new UtilsService();
-  private dashboardService = new DashboardService();
+  public readonly dashboardService = inject(DashboardService);
+
   isAssisting: boolean = false;
   otherIndustry: any = '';
+  otherBusiness: any = '';
+  otherPosition: any = '';
   registrationForm: FormGroup;
+  positions: any[] = [];
+
+  clientOptions = CLIENT_OPTIONS;
 
   typeIndustry: string[] = [
     "Ninguna", 
@@ -66,32 +73,59 @@ export class FormExpoComponent {
 
 
   onSubmit() {
+    if (this.registrationForm.get("phone")?.value?.length !== 10) {
+      this.utilsService.onWarn("Por favor, ingrese un número de celular válido de 10 dígitos.");
+      return;
+    }
+
     if (this.registrationForm.valid) {
       let formValue = { ...this.registrationForm.value };
 
-      if (formValue.phone.length !== 10) {
-        this.utilsService.onWarn("Por favor, ingrese un número de celular válido de 10 dígitos.");
-        return;
-      }
 
       if (formValue.type_industry === 'Otro' && !this.otherIndustry) {
         this.utilsService.onWarn("Por favor, ingrese el nombre de la industria.");
         return;
       }
 
+      if (formValue.position === 'Otro' && !this.otherPosition) {
+        this.utilsService.onWarn("Por favor, ingrese el nombre del cargo.");
+        return;
+      }
+
+      if (formValue.business === 'Otro' && !this.otherBusiness) {
+        this.utilsService.onWarn("Por favor, ingrese el nombre de la empresa.");
+        return;
+      }
+
+      if (formValue.business != 'Otro' && formValue.position != 'Otro') {
+        formValue.is_coincidence = true;
+      }
+
       if (formValue.type_industry === 'Otro') {
         formValue.type_industry = this.otherIndustry;
       }
 
+      if (formValue.position === 'Otro') {
+        formValue.position = this.otherPosition;
+      }
+
+      if (formValue.business === 'Otro') {
+        formValue.business = this.otherBusiness;
+      }
+
+      console.log(formValue);
       this.dashboardService.postFormExpo(formValue).subscribe({
         next: (response) => {
           this.utilsService.onSuccess("Formulario enviado exitosamente.");  
           this.registrationForm.reset();
           this.otherIndustry = null;
+          this.otherPosition = null;
+          this.otherBusiness = null;
         },
         error: (error) => {
           console.log(error);
-          this.utilsService.onError("Error al enviar el formulario. Por favor, inténtelo de nuevo.");
+          const message_error = error?.error?.message;
+          this.utilsService.onError(message_error ?? "Error al enviar el formulario. Por favor, inténtelo de nuevo.");
         }
       });
 
@@ -99,6 +133,11 @@ export class FormExpoComponent {
     } else {
       this.utilsService.onWarn("Por favor, complete todos los campos requeridos.");
     }
+  }
+
+
+  onChangeClient(client: string) {
+    this.positions = POSITION_BY_CLIENT[client] || [];
   }
     
 }

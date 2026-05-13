@@ -86,10 +86,11 @@
                         <th scope="col">Nombres</th>
                         <th scope="col">Correo</th>
                         <th scope="col">Teléfono</th>
-                        <th scope="col">Posición</th>
+                        <th scope="col">Cargo</th>
                         <th scope="col">Empresa</th>
                         <th scope="col">Tipo industria</th>
                         <th scope="col">Asistirá</th>
+                        <th scope="col">Estado email</th>
                     </tr>
 
                 </ng-template>
@@ -145,6 +146,10 @@
 
                         <td data-titulo="Asistirá:">
                             {{ register?.is_assist ? 'Si' : 'No' }}
+                        </td>
+
+                        <td  data-titulo="Estado mail:">
+                            <p-tag [value]="register?.status_email ?? 'Desconocido' " [severity]="getSeverity(register?.status_email)"></p-tag>
                         </td>
 
                     </tr>

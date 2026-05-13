@@ -33,6 +33,7 @@ import {
 
 import { DashboardService } from 'src/app/services/dashboard.service';
 import { Router } from '@angular/router';
+import { UtilsService } from 'src/app/services/utils.service';
 
 @Component({
     selector: 'app-table-register',
@@ -66,6 +67,7 @@ export class TableRegisterComponent {
 
     public readonly dashboardService = inject(DashboardService);
     public readonly messageService = inject(MessageService);
+    public readonly utilsService = inject(UtilsService);
     private readonly router = inject(Router)
 
     isLoading: boolean = false;
@@ -86,10 +88,6 @@ export class TableRegisterComponent {
     hasScanned: boolean = false;
 
     items: any = [
-        {
-            label: 'Ver detalles',
-            icon: 'pi pi-eye',
-        },
         {
             label: 'Enviar QR',
             icon: 'pi pi-qrcode',
@@ -133,12 +131,27 @@ export class TableRegisterComponent {
         }
     }
 
+    fetchReportHistory() {
+        this.isLoading = true;
+
+        this.dashboardService.getReportHistory().subscribe({
+            next: (data: any) => {
+                this.isLoading = false;
+                this.utilsService.downloadFile(data, 'reporte_excel');
+            },
+            error: (error: any) => {
+                this.isLoading = false;
+                console.log(error)
+            }
+        })
+    }
+
     optionsRegister(register: any) {
         this.selectedRegister = register;
     }
 
     generateExcel() {
-
+        this.fetchReportHistory();
     }
 
     scanQr() {
@@ -294,6 +307,17 @@ export class TableRegisterComponent {
 
         });
 
+    }
+
+    getSeverity(status: string) {
+        switch (status) {
+        case "Enviado":
+            return 'success';
+        case "Pendiente":
+            return 'warning';
+        default:
+            return 'info';
+        }
     }
 
     loadRegistrations() {

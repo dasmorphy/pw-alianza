@@ -13,14 +13,14 @@ export class DashboardService {
 
     postFormExpo(data: any) {
         return this.http.post(
-            `${environment.apiUrl}/rest/zent-logbook-api/v1.0/form-expo`,
+            `http://localhost:2120/rest/zent-logbook-api/v1.0/form-expo`,
             {data}
         );
     }
 
     getFormExpo() {
         return this.http.get(
-            `${environment.apiUrl}/rest/zent-logbook-api/v1.0/form-expo`,
+            `http://localhost:2120/rest/zent-logbook-api/v1.0/form-expo`,
         );
     }
 
@@ -28,6 +28,15 @@ export class DashboardService {
         return this.http.get(
             `${environment.apiUrl}/rest/zent-logbook-api/v1.0/form-expo`,
         );
+    }
+
+    getReportHistory() {
+        return this.http.get(`http://localhost:2120/rest/zent-logbook-api/v1.0/generate_report_form`,
+            {
+                responseType: 'blob',
+                observe: 'response'
+            }
+        )
     }
 
 }
