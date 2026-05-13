@@ -20,13 +20,13 @@ export class DashboardService {
 
     getFormExpo() {
         return this.http.get(
-            `http://localhost:2120/rest/zent-logbook-api/v1.0/form-expo`,
+            `${environment.apiUrl}/rest/zent-logbook-api/v1.0/form-expo`,
         );
     }
 
     scanQr(tokenQr: any) {
         return this.http.get(
-            `http://localhost:2120/rest/zent-logbook-api/v1.0/form-expo`,
+            `${environment.apiUrl}/rest/zent-logbook-api/v1.0/form-expo`,
         );
     }
 

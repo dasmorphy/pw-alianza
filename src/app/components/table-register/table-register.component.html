@@ -40,6 +40,7 @@
 
             <p-table #dt_register [value]="registrations" [paginator]="true" [rows]="5"
                 [rowsPerPageOptions]="[5, 10, 25, 50]" [showCurrentPageReport]="false"
+                [globalFilterFields]="['business','email','names', 'phone', 'position', 'type_industry']"
                 [tableStyle]="{ 'max-width': '100%' }" rowStyleClass="custom-row-height" dataKey="id">
 
                 <ng-template pTemplate="caption">

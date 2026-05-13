@@ -32,6 +32,7 @@ import {
 
 
 import { DashboardService } from 'src/app/services/dashboard.service';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-table-register',
@@ -65,6 +66,7 @@ export class TableRegisterComponent {
 
     public readonly dashboardService = inject(DashboardService);
     public readonly messageService = inject(MessageService);
+    private readonly router = inject(Router)
 
     isLoading: boolean = false;
 
@@ -95,8 +97,40 @@ export class TableRegisterComponent {
         },
     ];
 
-    constructor() {
-        this.loadRegistrations();
+    constructor() {}
+
+    ngOnInit(): void {
+        this.askCredentials();
+    }
+
+    askCredentials() {
+
+        const username = window.prompt('Usuario:');
+
+        if (!username) {
+            return;
+        }
+
+        const password = window.prompt('Contraseña:');
+
+        if (!password) {
+            return;
+        }
+
+        if (username === 'admin' && password === '1234') {
+            this.loadRegistrations();
+
+        } else {
+
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Acceso denegado',
+                detail: 'Usuario o contraseña incorrectos'
+            });
+
+            this.router.navigate(['/']);
+
+        }
     }
 
     optionsRegister(register: any) {
