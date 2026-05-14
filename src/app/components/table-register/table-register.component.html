@@ -1,5 +1,72 @@
 <p-toast></p-toast>
 
+
+<p-dialog header="Header" [closable]="false" [(visible)]="showDetailInv" [draggable]="false" [modal]="true"
+    [style]="{ 'width': '30vw', 'border-radius': '32px'}">
+    <ng-template pTemplate="header">
+        <div class="w-full">
+            <h1 style="margin: 0; font-size: 22px;" class="text-center mt-3">
+                Detalle Invitación
+            </h1>
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="content">
+
+        <div class="div-responsive mt-2 gap-2">
+            <div class="flex flex-column w-full card-info">
+                <!-- <i class="pi pi-user mb-3" style="color: #0056b3;"></i> -->
+                <label class="font-bold cab-label" htmlFor="shipping_guide">NOMBRES: </label>
+                <label class="det-label"  htmlFor="shipping_guide">{{dataInvQr?.names}}</label>
+            </div>
+
+            <div class="flex flex-column w-full card-info">
+                <!-- <i class="pi pi-envelope mb-3" style="color: #0056b3;"></i> -->
+                <label class="font-bold cab-label" htmlFor="shipping_guide">EMAIL: </label>
+                <label class="det-label"  htmlFor="shipping_guide">{{dataInvQr?.email}}</label>
+            </div>
+
+            <div class="flex flex-column w-full card-info">
+                <!-- <i class="pi pi-mobile mb-3" style="color: #0056b3;"></i> -->
+                <label class="font-bold cab-label" htmlFor="shipping_guide">CELULAR: </label>
+                <label class="det-label"  htmlFor="shipping_guide">{{dataInvQr?.phone}}</label>
+            </div>
+
+            <div class="flex flex-column w-full card-info">
+                <!-- <i class="pi pi-truck mb-3" style="color: #0056b3;"></i> -->
+                <label class="font-bold cab-label" htmlFor="shipping_guide">CARGO: </label>
+                <label class="det-label"  htmlFor="shipping_guide">{{dataInvQr?.position}}</label>
+            </div>
+
+            <div class="flex flex-column w-full card-info">
+                <!-- <i class="pi pi-hammer mb-3" style="color: #0056b3;"></i> -->
+                <label class="font-bold cab-label" htmlFor="shipping_guide">EMPRESA: </label>
+                <label class="det-label"  htmlFor="shipping_guide">{{dataInvQr?.business ?? 'N/A'}}</label>
+            </div>
+
+            <div class="flex flex-column w-full card-info">
+                <!-- <i class="pi pi-shopping-bag mb-3" style="color: #0056b3;"></i> -->
+                <label class="font-bold cab-label" htmlFor="shipping_guide">TIPO INDUSTRIA: </label>
+                <label class="det-label"  htmlFor="shipping_guide">{{dataInvQr?.type_industry ?? 'N/A'}}</label>
+            </div>
+
+            <div class="flex flex-column w-full card-info">
+                <!-- <i class="pi pi-cart-arrow-down mb-3" style="color: #0056b3;"></i> -->
+                <label class="font-bold cab-label" htmlFor="shipping_guide">ASISTIRÁ: </label>
+                <label class="det-label"  htmlFor="shipping_guide">{{dataInvQr?.is_assist ? 'Si' : 'No'}}</label>
+            </div>
+        </div>
+
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <div class="flex justify-content-center gap-3" style="font-size: 15px;">
+            <p-button label="Cerrar" (onClick)="closeDetailInv()" styleClass="bg-btn-cancel w-full">
+            </p-button>
+        </div>
+    </ng-template>
+</p-dialog>
+
 <p-dialog [(visible)]="scannerEnabled" header="Escanear QR" [modal]="true" [closable]="true" [draggable]="false"
     [resizable]="false" [style]="{ width: '500px' }" (onShow)="onScannerDialogShow()" (onHide)="closeScanner()">
 

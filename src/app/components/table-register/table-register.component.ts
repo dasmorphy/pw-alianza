@@ -71,6 +71,9 @@ export class TableRegisterComponent {
     private readonly router = inject(Router)
 
     isLoading: boolean = false;
+    showDetailInv: boolean = false;
+
+    dataInvQr: any = null;
 
     registrations: any[] = [];
 
@@ -92,6 +95,7 @@ export class TableRegisterComponent {
             label: 'Enviar QR',
             icon: 'pi pi-qrcode',
             visible: () => !this.selectedRegister?.token_qr,
+            command: () => this.sendEmail()
         },
     ];
 
@@ -162,6 +166,32 @@ export class TableRegisterComponent {
 
         this.scannerEnabled = true;
 
+    }
+
+    sendEmail() {
+        this.isLoading = true;
+        this.dashboardService.sendEmail(this.selectedRegister?.id_form).subscribe({
+            next: (data: any) => {
+                this.isLoading = false;
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Éxito',
+                    detail: data?.message ?? "Email enviado correctamente"
+                });
+                this.loadRegistrations();
+            },
+            error: (error: any) => {
+                this.isLoading = false;
+                console.error(error);
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: error?.error?.message ?? "Error al enviar el email"
+                });
+
+            }
+
+        });
     }
 
     onScannerDialogShow() {
@@ -265,6 +295,11 @@ export class TableRegisterComponent {
 
     }
 
+    closeDetailInv() {
+        this.dataInvQr = null
+        this.showDetailInv = false;
+    }
+
     onScan(qr: string) {
 
         if (this.hasScanned) return;
@@ -280,6 +315,8 @@ export class TableRegisterComponent {
             next: (data: any) => {
 
                 this.isLoading = false;
+                this.showDetailInv = true;
+                this.dataInvQr = data?.data
 
                 console.log(data);
 
@@ -300,7 +337,7 @@ export class TableRegisterComponent {
                 this.messageService.add({
                     severity: 'error',
                     summary: 'QR inválido',
-                    detail: 'No se pudo validar el código QR.'
+                    detail: error?.error?.message ?? 'No se pudo validar el código QR.'
                 });
 
             }

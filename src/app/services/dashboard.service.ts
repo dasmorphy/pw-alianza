@@ -13,25 +13,31 @@ export class DashboardService {
 
     postFormExpo(data: any) {
         return this.http.post(
-            `http://localhost:2120/rest/zent-logbook-api/v1.0/form-expo`,
+            `${environment.apiUrl}/rest/zent-logbook-api/v1.0/form-expo`,
             {data}
         );
     }
 
     getFormExpo() {
         return this.http.get(
-            `http://localhost:2120/rest/zent-logbook-api/v1.0/form-expo`,
+            `${environment.apiUrl}/rest/zent-logbook-api/v1.0/form-expo`,
         );
     }
 
     scanQr(tokenQr: any) {
         return this.http.get(
-            `${environment.apiUrl}/rest/zent-logbook-api/v1.0/form-expo`,
+            `${environment.apiUrl}/rest/zent-logbook-api/v1.0/validate-qr-invitation?qr-token=${tokenQr}`,
+        );
+    }
+
+    sendEmail(id_form: number) {
+        return this.http.get(
+            `${environment.apiUrl}/rest/zent-logbook-api/v1.0/send-qr/${id_form}`,
         );
     }
 
     getReportHistory() {
-        return this.http.get(`http://localhost:2120/rest/zent-logbook-api/v1.0/generate_report_form`,
+        return this.http.get(`${environment.apiUrl}/rest/zent-logbook-api/v1.0/generate_report_form`,
             {
                 responseType: 'blob',
                 observe: 'response'
